@@ -1,10 +1,10 @@
-{ username, ... }:
+{ cfg, ... }:
 
 {
-  users.users."${username}"= {
-    home = "/Users/${username}";
-    description = username;
+  users.users."${cfg.user.name}"= {
+    home = "/Users/${cfg.user.name}";
+    description = cfg.user.name;
   };
 
-  nix.settings.trusted-users = [ username ];
+  nix.settings.trusted-users = [ cfg.user.name ];
 }
