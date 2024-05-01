@@ -1,35 +1,56 @@
-{ lib, stdenvNoCC, fetchzip, fetchFromGitHub, requireFile, unzip }:
+{ pkgs, lib, stdenvNoCC, fetchurl, fetchFromGitHub, requireFile, unzip }:
 
 stdenvNoCC.mkDerivation rec {
   pname = "nerdfonts";
   version = "3.2.1";
 
-  jetbrains_src = fetchzip {
-    url = "https://github.com/ryanoasis/nerd-fonts/releases/download/v${version}/JetBrainsMono.zip";
-    hash = "sha256-d12SnIhD5LdrgZYH7zzQ8otnRyp45VTCC9vEXVsVKLY=";
-  };
-  src = fetchFromGitHub {
-    owner = "Karmenzind";
-    repo = "monaco-nerd-fonts";
-    rev = "master";
-    hash = "sha256-QQBnt/aTq2skSk73VEjWZB0KqewOVRf5dfpnqN88aes";
-  };
-  monolisa_src = requireFile {
-    name = "MonoLisa-Plus-2.013-NF.zip";
-    url = "https://www.monolisa.dev/";
-    hash = "sha256-6V7tVzYuGOuttHv/3QXATh2M0GkVibimuR+SDi47jBQ=";
-  };
+  srcs = [
+    (fetchFromGitHub {
+      owner = "Karmenzind";
+      repo = "monaco-nerd-fonts";
+      rev = "master";
+      hash = "sha256-QQBnt/aTq2skSk73VEjWZB0KqewOVRf5dfpnqN88aes";
+    })
+    (fetchurl {
+      url = "https://github.com/ryanoasis/nerd-fonts/releases/download/v${version}/JetBrainsMono.zip";
+      hash = "sha256-ZZaSKquviHa7ZXw2pHAJrGjDiGYttF1KwFwlNsLwet4=";
+    })
+    (requireFile {
+      name = "MonoLisa-Plus-2.013.zip";
+      url = "https://www.monolisa.dev/";
+      hash = "sha256-f22TrzWT7oaZd9v/dMPgIYmObQw8+kLEOix4ND7t0QM=";
+    })
+  ];
 
   nativeBuildInputs = [
     unzip
   ];
 
+  buildInputs = [
+    pkgs.nerd-font-patcher
+  ];
+
+  unpackPhase = ''
+    sources=($srcs)
+
+    cp -r ''${sources[0]}/fonts .
+    unzip -o ''${sources[1]}
+    unzip -o ''${sources[2]}
+  '';
+
   buildPhase = ''
     runHook preBuild
 
-    ls .
-    unzip $jetbrains_src
-    unzip $monolisa_src
+    mkdir -p ./final
+    cp fonts/* ./final
+    cp JetBrainsMonoNerdFont-*.ttf ./final
+
+    cd ttf
+    for filename in ./MonoLisa*.ttf; do
+      nerd-font-patcher --complete --out ../final --no-progressbars --quiet "$filename"
+    done
+
+    cd ..
 
     runHook postBuild
   '';
@@ -38,7 +59,7 @@ stdenvNoCC.mkDerivation rec {
     runHook preInstall
 
     mkdir -p $out/share/fonts/truetype
-    cp **/*.ttf $out/share/fonts/truetype
+    cp ./final/*.ttf $out/share/fonts/truetype
 
     runHook postInstall
   '';
