@@ -159,6 +159,7 @@
         "owner": "nix-systems",
         "repo": "default",
         "type": "github"
+        "nixpkgs": "nixpkgs"
       }
     }
   },

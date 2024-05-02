@@ -13,7 +13,13 @@
       # Build default darwin flake with:
       # $ darwin-rebuild switch --flake .#default
       darwinConfigurations.default = nix-darwin.lib.darwinSystem {
-        specialArgs = { inherit inputs; };
+        specialArgs =
+          inputs
+          // {
+            config = {
+              masApps = true;
+            };
+          };
 
         modules = [
           ./src/config/nix-darwin.nix
@@ -27,13 +33,21 @@
         specialArgs =
           inputs
           // {
-            username = "vlad";
+            cfg = {
+              homebrew = {
+                masApps = true;
+              };
+              user = {
+                name = "vlad";
+              };
+            };
           };
 
         modules = [
           ./src/config/nix-darwin.nix
           ./src/config/aarch64.nix
           ./src/config/pkgs.nix
+          ./src/config/homebrew.nix
           ./src/config/user.nix
           nix-homebrew.darwinModules.nix-homebrew
           {
@@ -65,13 +79,21 @@
         specialArgs =
           inputs
           // {
-            username = "v.zaharia";
+            cfg = {
+              homebrew = {
+                masApps = false;
+              };
+              user = {
+                name = "v.zaharia";
+              };
+            };
           };
 
         modules = [
           ./src/config/nix-darwin.nix
           ./src/config/aarch64.nix
           ./src/config/pkgs.nix
+          ./src/config/homebrew.nix
           ./src/config/user.nix
         ];
       };

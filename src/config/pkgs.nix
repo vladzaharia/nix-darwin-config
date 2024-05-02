@@ -8,7 +8,4 @@
     # Intall fonts
     fonts.fontDir.enable = true;
     fonts.fonts = pkgs.callPackage ../pkgs/fonts.nix {};
-
-    # Homebrew config
-    homebrew = import ../homebrew.nix;
 }
