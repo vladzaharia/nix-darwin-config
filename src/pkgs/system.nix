@@ -53,6 +53,7 @@ with pkgs; [
     vault-bin
 
     # Nix tools
+    attic-client
     cachix
     devenv 
     nixfmt-classic

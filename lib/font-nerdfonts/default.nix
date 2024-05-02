@@ -15,6 +15,10 @@ stdenvNoCC.mkDerivation rec {
       url = "https://github.com/ryanoasis/nerd-fonts/releases/download/v${version}/JetBrainsMono.zip";
       hash = "sha256-ZZaSKquviHa7ZXw2pHAJrGjDiGYttF1KwFwlNsLwet4=";
     })
+    (fetchurl {
+      url = "https://github.com/ryanoasis/nerd-fonts/releases/download/v${version}/Monaspace.zip";
+      hash = "sha256-ZP8+ANkoIwV2t9DPpEPtJUODiLxfyGnGGv8melmhj34";
+    })
     (requireFile {
       name = "MonoLisa-Plus-2.013.zip";
       url = "https://www.monolisa.dev/";
@@ -36,6 +40,7 @@ stdenvNoCC.mkDerivation rec {
     cp -r ''${sources[0]}/fonts .
     unzip -o ''${sources[1]}
     unzip -o ''${sources[2]}
+    unzip -o ''${sources[3]}
   '';
 
   buildPhase = ''
@@ -44,6 +49,7 @@ stdenvNoCC.mkDerivation rec {
     mkdir -p ./final
     cp fonts/* ./final
     cp JetBrainsMonoNerdFont-*.ttf ./final
+    cp Monaspice*NerdFont-*.ttf ./final
 
     cd ttf
     for filename in ./MonoLisa*.ttf; do

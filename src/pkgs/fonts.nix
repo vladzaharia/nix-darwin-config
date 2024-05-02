@@ -4,6 +4,7 @@ with pkgs; [
     # Built in fonts
     font-awesome_5
     jetbrains-mono
+    monaspace
 
     # Custom fonts
     (callPackage ../../lib/font-monolisa { })
