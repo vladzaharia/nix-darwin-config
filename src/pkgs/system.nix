@@ -56,4 +56,5 @@ with pkgs; [
     cachix
     devenv 
     nixfmt-classic
+    alejandra
 ]
