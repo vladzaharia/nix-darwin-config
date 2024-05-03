@@ -19,19 +19,10 @@ stdenvNoCC.mkDerivation rec {
       url = "https://github.com/ryanoasis/nerd-fonts/releases/download/v${version}/Monaspace.zip";
       hash = "sha256-ZP8+ANkoIwV2t9DPpEPtJUODiLxfyGnGGv8melmhj34";
     })
-    (requireFile {
-      name = "MonoLisa-Plus-2.013.zip";
-      url = "https://www.monolisa.dev/";
-      hash = "sha256-f22TrzWT7oaZd9v/dMPgIYmObQw8+kLEOix4ND7t0QM=";
-    })
   ];
 
   nativeBuildInputs = [
     unzip
-  ];
-
-  buildInputs = [
-    pkgs.nerd-font-patcher
   ];
 
   unpackPhase = ''
@@ -40,7 +31,6 @@ stdenvNoCC.mkDerivation rec {
     cp -r ''${sources[0]}/fonts .
     unzip -o ''${sources[1]}
     unzip -o ''${sources[2]}
-    unzip -o ''${sources[3]}
   '';
 
   buildPhase = ''
@@ -49,14 +39,12 @@ stdenvNoCC.mkDerivation rec {
     mkdir -p ./final
     cp fonts/* ./final
     cp JetBrainsMonoNerdFont-*.ttf ./final
-    cp Monaspice*NerdFont-*.ttf ./final
 
-    cd ttf
-    for filename in ./MonoLisa*.ttf; do
-      nerd-font-patcher --complete --out ../final --no-progressbars --quiet "$filename"
-    done
-
-    cd ..
+    cp MonaspiceArNerdFont-*.otf ./final
+    cp MonaspiceKrNerdFont-*.otf ./final
+    cp MonaspiceNeNerdFont-*.otf ./final
+    cp MonaspiceRnNerdFont-*.otf ./final
+    cp MonaspiceXeNerdFont-*.otf ./final
 
     runHook postBuild
   '';
@@ -65,7 +53,7 @@ stdenvNoCC.mkDerivation rec {
     runHook preInstall
 
     mkdir -p $out/share/fonts/truetype
-    cp ./final/*.ttf $out/share/fonts/truetype
+    cp ./final/* $out/share/fonts/truetype
 
     runHook postInstall
   '';

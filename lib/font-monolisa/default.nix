@@ -1,4 +1,4 @@
-{ lib, stdenvNoCC, requireFile, unzip }:
+{ pkgs, lib, stdenvNoCC, requireFile, unzip }:
 
 stdenvNoCC.mkDerivation rec {
   pname = "monolisa";
@@ -14,6 +14,10 @@ stdenvNoCC.mkDerivation rec {
     unzip
   ];
 
+  buildInputs = [
+    pkgs.nerd-font-patcher
+  ];
+
   buildPhase = ''
     runHook preBuild
 
@@ -27,6 +31,11 @@ stdenvNoCC.mkDerivation rec {
 
     mkdir -p $out/share/fonts/truetype
     cp ttf/*.ttf $out/share/fonts/truetype
+
+    cd ttf
+    for filename in ttf/MonoLisa*.ttf; do
+      nerd-font-patcher --complete --out $out/share/fonts/truetype --no-progressbars --quiet "$filename"
+    done
 
     runHook postInstall
   '';
